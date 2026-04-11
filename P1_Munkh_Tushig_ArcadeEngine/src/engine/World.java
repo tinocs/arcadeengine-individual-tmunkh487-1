@@ -1,6 +1,7 @@
 package engine;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 
@@ -16,34 +17,67 @@ public abstract class World extends Pane {
     private Set<KeyCode> keysPressed;
     private boolean isWidthInit;
     private boolean isHeightInit;
-    private Set<Actor> actors;
+    private long time = 0;
+    private long delay = 1;
 
     public World() {
         keysPressed = new HashSet<>();
         isWidthInit = false;
         isHeightInit = false;
-        actors = new HashSet<>();
+        isTimerRunning = false;
+
+        widthProperty().addListener((ov, oldVal, newVal) -> {
+            isWidthInit = true;
+            if (isHeightInit) onDimensionsInitialized();
+        });
+
+        heightProperty().addListener((ov, oldVal, newVal) -> {
+            isHeightInit = true;
+            if (isWidthInit) onDimensionsInitialized();
+        });
+
+        sceneProperty().addListener((ov, oldVal, newVal) -> {
+            if (getScene() != null) {
+                requestFocus();
+            }
+        });
+
+        setOnKeyPressed(e -> {
+            keysPressed.add(e.getCode());
+        });
+
+        setOnKeyReleased(e -> {
+            keysPressed.remove(e.getCode());
+        });
+
         myAnimationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                if (now - time >= delay) {
+                    time = now;
 
+                    act(now);
+
+                    for (Actor actor : getObjects(Actor.class)) {
+                        if (actor.getWorld() == World.this) actor.act(now);
+                    }
+                }
             }
         };
-
-        widthProperty().addLis
     }
 
     public abstract void act(long now);
 
     public void add(Actor actor) {
-
+        getChildren().add(actor);
+        actor.addedToWorld();
     }
 
     public <A extends Actor> List<A> getObjects(Class<A> cls) {
         List<A> objects = new ArrayList<>();
-        for (Actor actor : actors) {
-            if (cls.isInstance(actor)) {
-                objects.add(cls.cast(actor));
+        for (Node node : getChildren()) {
+            if (cls.isInstance(node)) {
+                objects.add(cls.cast(node));
             }
         }
 
@@ -52,13 +86,9 @@ public abstract class World extends Pane {
 
     public <A extends Actor> List<A> getObjectsAt(double x, double y,  Class<A> cls) {
         List<A> objects = new ArrayList<>();
-        for (Actor actor : actors) {
+        for (Actor actor : getObjects(cls)) {
             if (cls.isInstance(actor)) {
-                int minX = actor.getX() - actor.getWidth() / 2;
-                int maxX = actor.getX() + actor.getWidth() / 2;
-                int minY = actor.getY() - actor.getHeight() / 2;
-                int maxY = actor.getY() + actor.getHeight() / 2;
-                if (minX <= x && x <= maxX && minY <= y && y <= maxY) {
+                if (actor.getBoundsInParent().contains(x, y)) {
                     objects.add(cls.cast(actor));
                 }
             }
@@ -72,13 +102,13 @@ public abstract class World extends Pane {
     }
 
     public boolean isStopped() {
-        return isTimerRunning;
+        return !isTimerRunning;
     }
 
     public abstract void onDimensionsInitialized();
 
     public void remove(Actor actor) {
-
+        getChildren().remove(actor);
     }
 
     public void start() {
