@@ -48,6 +48,7 @@ public class TestWorld extends World {
 		else {
 			passedAllTests = false;
 			System.out.println("You should call onDimensionsInitialized() exactly once --> failed");
+			return;
 		}
 		try {
 			System.out.println("*** Testing World onDimensionsInitialized() ***");
@@ -490,7 +491,8 @@ public class TestWorld extends World {
 			KeyFrame testRightKeyRelease = new KeyFrame(Duration.seconds(5.0), e -> testRightKeyRelease()); 
 			KeyFrame removeCoin = new KeyFrame(Duration.seconds(5.5), e -> removeCoin());
 			KeyFrame removePlayer1 = new KeyFrame(Duration.seconds(6.0), e -> removePlayer1());
-			KeyFrame finishTest = new KeyFrame(Duration.seconds(6.5), e -> finishTest());
+			KeyFrame resize = new KeyFrame(Duration.seconds(6.5), e -> resizeWorld());
+			KeyFrame finishTest = new KeyFrame(Duration.seconds(8), e -> finishTest());
 			Timeline timeline = new Timeline(
 					testStart,
 					stopAndRecordFrameCount,
@@ -504,6 +506,7 @@ public class TestWorld extends World {
 					testRightKeyRelease,
 					removeCoin,
 					removePlayer1,
+					resize,
 					finishTest
 			);
 			Platform.runLater(() -> timeline.play());
@@ -754,6 +757,10 @@ public class TestWorld extends World {
 	private void removePlayer1() {
 		System.out.println("Testing removing player1 from world in TestWorld act().");
 		removePlayer1 = true;
+	}
+	
+	private void resizeWorld() {
+		setMinSize(400,  600);
 	}
 
 	private void finishTest() {
