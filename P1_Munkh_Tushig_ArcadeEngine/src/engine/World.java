@@ -17,6 +17,7 @@ public abstract class World extends Pane {
     private Set<KeyCode> keysPressed;
     private boolean isWidthInit;
     private boolean isHeightInit;
+    private boolean isDimensionsInit;
     private long time = 0;
     private long delay = 1;
 
@@ -24,16 +25,23 @@ public abstract class World extends Pane {
         keysPressed = new HashSet<>();
         isWidthInit = false;
         isHeightInit = false;
+        isDimensionsInit = false;
         isTimerRunning = false;
 
         widthProperty().addListener((ov, oldVal, newVal) -> {
             isWidthInit = true;
-            if (isHeightInit) onDimensionsInitialized();
+            if (isHeightInit && !isDimensionsInit) {
+                onDimensionsInitialized();
+                isDimensionsInit = true;
+            }
         });
 
         heightProperty().addListener((ov, oldVal, newVal) -> {
             isHeightInit = true;
-            if (isWidthInit) onDimensionsInitialized();
+            if (isWidthInit && !isDimensionsInit) {
+                onDimensionsInitialized();
+                isDimensionsInit = true;
+            }
         });
 
         sceneProperty().addListener((ov, oldVal, newVal) -> {
