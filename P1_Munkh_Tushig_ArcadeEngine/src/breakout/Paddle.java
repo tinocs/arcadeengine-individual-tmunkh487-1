@@ -2,6 +2,7 @@ package breakout;
 
 import engine.Actor;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 
 public class Paddle extends Actor {
 
@@ -11,6 +12,12 @@ public class Paddle extends Actor {
 
     @Override
     public void act(long now) {
-        //blank
+        if (getWorld().isKeyPressed(KeyCode.LEFT)) {
+            move(-10, 0);
+        }
+
+        if (getWorld().isKeyPressed(KeyCode.RIGHT)) {
+            move(10, 0);
+        }
     }
 }
