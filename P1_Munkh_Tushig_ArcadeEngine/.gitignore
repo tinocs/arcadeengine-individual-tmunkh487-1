@@ -28,24 +28,3 @@ bin/
 
 ### Mac OS ###
 .DS_Store
-
-# Eclipse files
-.project
-.classpath
-.settings
-/bin/
-
-# intellij files
-.idea
-
-#bluej
-package.bluej
-*.ctxt
-
-# output files
-*.class
-
-# system files
-desktop.ini
-*.swp
-.DS_Store
