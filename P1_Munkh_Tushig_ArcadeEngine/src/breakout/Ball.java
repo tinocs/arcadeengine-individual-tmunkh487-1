@@ -11,7 +11,7 @@ public class Ball extends Actor {
     double dy;
 
     public Ball() {
-        setImage(new Image(Ball.class.getResource("/breakoutresources/ball.png").toString()));
+        setImage(new Image("file:src/breakoutresources/ball.png"));
 
         dx = 6;
         dy = 7;
@@ -23,30 +23,27 @@ public class Ball extends Actor {
 
         Bounds worldBounds = getWorld().getBoundsInLocal();
 
-        boolean isBounce = false;
-
         if (getX() <= worldBounds.getMinX()) {
-            isBounce = true;
+            dx = -dx;
             setX(0);
         }
 
         if (getY() <= worldBounds.getMinY()) {
-            isBounce = true;
+            dy = -dy;
             setY(0);
         }
 
         if (getX() + getWidth() >= worldBounds.getMaxX()) {
-            isBounce = true;
+            dx = -dx;
             setX(worldBounds.getMaxX() - getWidth());
         }
 
         if (getY() + getHeight() >= worldBounds.getMaxY()) {
-            isBounce = true;
+            dy = -dy;
             setY(worldBounds.getMaxY() - getHeight());
         }
 
-        if (isBounce) {
-            dx = -dx;
+        if (getIntersectingObjects(Paddle.class).size() > 0) {
             dy = -dy;
         }
     }
