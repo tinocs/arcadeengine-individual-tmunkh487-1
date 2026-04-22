@@ -31,5 +31,11 @@ public class BallWorld extends World {
         setOnMouseMoved(e -> {
            paddle.setX(e.getX() - paddle.getWidth() / 2);
         });
+
+        Brick brick = new Brick();
+        getChildren().add(brick);
+
+        brick.setX(100);
+        brick.setY(100);
     }
 }
