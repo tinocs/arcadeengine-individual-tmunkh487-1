@@ -4,6 +4,8 @@ import engine.World;
 
 public class BallWorld extends World {
 
+    private Score score;
+
     public BallWorld() {
         setPrefHeight(600);
         setPrefWidth(800);
@@ -37,5 +39,14 @@ public class BallWorld extends World {
 
         brick.setX(100);
         brick.setY(100);
+
+        score = new Score();
+        score.setX(50);
+        score.setY(50);
+        getChildren().add(score);
+    }
+
+    public Score getScore() {
+        return score;
     }
 }

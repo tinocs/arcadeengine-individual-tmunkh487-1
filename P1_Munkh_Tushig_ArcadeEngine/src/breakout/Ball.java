@@ -36,6 +36,10 @@ public class Ball extends Actor {
         if (getX() + getWidth() >= worldBounds.getMaxX()) {
             dx = -dx;
             setX(worldBounds.getMaxX() - getWidth());
+
+            Score score = ((BallWorld) getWorld()).getScore();
+
+            score.setScoreVal(score.getScoreVal() - 1000);
         }
 
         if (getY() + getHeight() >= worldBounds.getMaxY()) {
@@ -60,6 +64,9 @@ public class Ball extends Actor {
             }
 
             getWorld().getChildren().remove(brick);
+
+            Score score = ((BallWorld) getWorld()).getScore();
+            score.setScoreVal(score.getScoreVal() + 100);
         }
     }
 }
