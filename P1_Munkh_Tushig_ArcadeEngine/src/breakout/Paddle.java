@@ -12,11 +12,11 @@ public class Paddle extends Actor {
 
     @Override
     public void act(long now) {
-        if (getWorld().isKeyPressed(KeyCode.LEFT)) {
+        if (getWorld().isKeyPressed(KeyCode.LEFT) || getWorld().isKeyPressed(KeyCode.A)) {
             move(-10, 0);
         }
 
-        if (getWorld().isKeyPressed(KeyCode.RIGHT)) {
+        if (getWorld().isKeyPressed(KeyCode.RIGHT) || getWorld().isKeyPressed(KeyCode.D)) {
             move(10, 0);
         }
     }

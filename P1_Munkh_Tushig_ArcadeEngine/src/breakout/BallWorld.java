@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -20,6 +21,9 @@ public class BallWorld extends World {
     private Lives lives;
     private Stage stage;
     private int numBricks = 100;
+    private boolean isPaused = true;
+    Ball ball;
+    Paddle paddle;
     int level;
 
     public BallWorld(Stage stage) {
@@ -44,6 +48,14 @@ public class BallWorld extends World {
                 setLevel();
             }
         }
+
+        if (isPaused && isKeyPressed(KeyCode.SPACE)) {
+            isPaused = false;
+        }
+
+        if (isPaused) {
+            ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
+        }
     }
 
     @Override
@@ -54,17 +66,17 @@ public class BallWorld extends World {
     public void setLevel() {
         numBricks = 0;
 
-        Ball ball = new Ball();
+        ball = new Ball();
         getChildren().add(ball);
 
-        Paddle paddle = new Paddle();
+        paddle = new Paddle();
         getChildren().add(paddle);
 
         paddle.setX(getWidth() / 2 - paddle.getWidth() / 2);
         paddle.setY(getHeight() - paddle.getHeight() * 4);
 
         ball.setX(getWidth() / 2 -  ball.getWidth() / 2);
-        ball.setY(paddle.getY() - ball.getHeight() / 2);
+        ball.setY(paddle.getY() - ball.getHeight());
 
         setOnMouseMoved(e -> {
             paddle.setX(e.getX() - paddle.getWidth() / 2);
@@ -161,5 +173,13 @@ public class BallWorld extends World {
 
     public Lives getLives() {
         return lives;
+    }
+
+    public boolean getIsPaused() {
+        return isPaused;
+    }
+
+    public void setIsPaused(boolean isPaused) {
+        this.isPaused = isPaused;
     }
 }
