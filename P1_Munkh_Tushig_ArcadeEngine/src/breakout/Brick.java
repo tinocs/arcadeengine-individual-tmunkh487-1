@@ -4,9 +4,10 @@ import engine.Actor;
 import javafx.scene.image.Image;
 
 public class Brick extends Actor {
-
-    public Brick() {
-        setImage(new Image("file:src/breakoutresources/brick.png"));
+    private int type;
+    public Brick(int type) {
+        this.type = type;
+        setImage(new Image("file:src/breakoutresources/brick" + type + ".png"));
     }
 
     @Override

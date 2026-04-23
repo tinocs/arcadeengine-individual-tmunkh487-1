@@ -67,6 +67,8 @@ public class Ball extends Actor {
 
             Score score = ((BallWorld) getWorld()).getScore();
             score.setScoreVal(score.getScoreVal() + 100);
+
+            ((BallWorld) getWorld()).decrementNumBricks();
         }
     }
 }
