@@ -17,6 +17,7 @@ import java.util.Scanner;
 public class BallWorld extends World {
 
     private Score score;
+    private Lives lives;
     private Stage stage;
     private int numBricks = 100;
     int level;
@@ -73,6 +74,12 @@ public class BallWorld extends World {
         score.setX(50);
         score.setY(50);
         getChildren().add(score);
+
+        lives = new Lives();
+        lives.setX(getWidth() - 100);
+        lives.setY(50);
+        getChildren().add(lives);
+
         try {
             Scanner in = new Scanner(new File("src/breakoutresources/level" + level + ".txt"));
 
@@ -150,5 +157,9 @@ public class BallWorld extends World {
 
     public Score getScore() {
         return score;
+    }
+
+    public Lives getLives() {
+        return lives;
     }
 }

@@ -40,6 +40,10 @@ public class Ball extends Actor {
             Score score = ((BallWorld) getWorld()).getScore();
 
             score.setScoreVal(score.getScoreVal() - 1000);
+
+            Lives lives = ((BallWorld) getWorld()).getLives();
+
+            lives.setLivesVal(lives.getLivesVal() - 1);
         }
 
         if (getY() + getHeight() >= worldBounds.getMaxY()) {
