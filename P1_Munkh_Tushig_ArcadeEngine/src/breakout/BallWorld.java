@@ -1,5 +1,6 @@
 package breakout;
 
+import engine.Sound;
 import engine.World;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,6 +27,9 @@ public class BallWorld extends World {
     Paddle paddle;
     int level;
 
+    private Sound loseSound = new Sound("breakoutresources/game_lost.wav");
+    private Sound winSound = new Sound("breakoutresources/game_won.wav");
+
     public BallWorld(Stage stage) {
         this.stage = stage;
         level = 1;
@@ -40,6 +44,8 @@ public class BallWorld extends World {
         if (numBricks == 0) {
             level++;
             if (level == 3) {
+                winSound.play();
+
                 setTitleScreen();
                 level = 1;
             }
@@ -55,6 +61,10 @@ public class BallWorld extends World {
 
         if (isPaused) {
             ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
+        }
+
+        if (lives.getLivesVal() <= 0) {
+            loseSound.play();
         }
     }
 
