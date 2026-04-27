@@ -5,11 +5,14 @@ import engine.World;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -21,8 +24,10 @@ public class BallWorld extends World {
     private Score score;
     private Lives lives;
     private Stage stage;
+    private boolean isGameOver = false;
     private int numBricks = 100;
     private boolean isPaused = true;
+    Text gameOverText = new Text();
     Ball ball;
     Paddle paddle;
     int level;
@@ -41,13 +46,30 @@ public class BallWorld extends World {
 
     @Override
     public void act(long now) {
+        if (isGameOver && isKeyPressed(KeyCode.SPACE)) {
+            gameOverText.setVisible(false);
+
+            level = 1;
+            lives.setLivesVal(3);
+            getChildren().clear();
+            setTitleScreen();
+        }
+
         if (numBricks == 0) {
             level++;
-            if (level == 3) {
+            if (level == 3 && !isGameOver) {
                 winSound.play();
 
-                setTitleScreen();
-                level = 1;
+                isGameOver = true;
+
+                gameOverText.setText("You Won!");
+
+                getChildren().add(gameOverText);
+
+                gameOverText.setX(getWidth() / 2 - gameOverText.getBoundsInLocal().getWidth() / 2);
+                gameOverText.setY(getHeight() / 2 - gameOverText.getBoundsInLocal().getHeight() / 2);
+
+                isPaused = true;
             }
             else {
                 getChildren().clear();
@@ -63,8 +85,19 @@ public class BallWorld extends World {
             ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
         }
 
-        if (lives.getLivesVal() <= 0) {
+        if (lives.getLivesVal() == 0 && !isGameOver) {
             loseSound.play();
+
+            isGameOver = true;
+
+            gameOverText.setText("You Lost!");
+
+            getChildren().add(gameOverText);
+
+            gameOverText.setX(getWidth() / 2 - gameOverText.getBoundsInLocal().getWidth() / 2);
+            gameOverText.setY(getHeight() / 2 - gameOverText.getBoundsInLocal().getHeight() / 2);
+
+            isPaused = true;
         }
     }
 
@@ -143,9 +176,11 @@ public class BallWorld extends World {
     }
 
     public void setTitleScreen() {
+        isGameOver = false;
+
         stage.setTitle("Breakout");
-        stage.setWidth(200);
-        stage.setHeight(100);
+        stage.setWidth(800);
+        stage.setHeight(600);
 
         //title screen
         VBox root = new VBox();
