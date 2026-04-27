@@ -6,6 +6,8 @@ import javafx.scene.input.KeyCode;
 
 public class Paddle extends Actor {
 
+    private int dx = 10;
+
     public Paddle() {
         setImage(new Image("file:src/breakoutresources/paddle.png"));
     }
@@ -14,11 +16,19 @@ public class Paddle extends Actor {
     public void act(long now) {
         if (!((BallWorld) getWorld()).getIsGameOver()) {
             if (getWorld().isKeyPressed(KeyCode.LEFT) || getWorld().isKeyPressed(KeyCode.A)) {
-                move(-10, 0);
+                if (0 <= getX() - dx) {
+                    move(-dx, 0);
+
+                    if (getX() < getWorld().getWidth() / 2) ((BallWorld) getWorld()).scroll(-dx);
+                }
             }
 
             if (getWorld().isKeyPressed(KeyCode.RIGHT) || getWorld().isKeyPressed(KeyCode.D)) {
-                move(10, 0);
+                if (getX() + dx <= getWorld().getWidth() - getWidth()) {
+                    move(dx, 0);
+
+                    if (getX() > getWorld().getWidth() / 2) ((BallWorld) getWorld()).scroll(dx);
+                }
             }
         }
     }

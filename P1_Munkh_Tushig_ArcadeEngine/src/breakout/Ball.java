@@ -28,29 +28,27 @@ public class Ball extends Actor {
         if (!((BallWorld) getWorld()).getIsPaused() && !((BallWorld) getWorld()).getIsGameOver()) {
             move(dx, dy);
 
-            Bounds worldBounds = getWorld().getBoundsInLocal();
-
-            if (getX() <= worldBounds.getMinX()) {
+            if (getX() <= 0) {
                 dx = -dx;
                 setX(0);
                 bounceSnd.play();
             }
 
-            if (getY() <= worldBounds.getMinY()) {
+            if (getY() <= 0) {
                 dy = -dy;
                 setY(0);
                 bounceSnd.play();
             }
 
-            if (getX() + getWidth() >= worldBounds.getMaxX()) {
+            if (getX() + getWidth() >= getWorld().getWidth()) {
                 dx = -dx;
-                setX(worldBounds.getMaxX() - getWidth());
+                setX(getWorld().getWidth() - getWidth());
                 bounceSnd.play();
             }
 
-            if (getY() + getHeight() >= worldBounds.getMaxY()) {
+            if (getY() + getHeight() >= getWorld().getHeight()) {
                 dy = -dy;
-                setY(worldBounds.getMaxY() - getHeight());
+                setY(getWorld().getHeight() - getHeight());
 
                 Score score = ((BallWorld) getWorld()).getScore();
 

@@ -1,20 +1,22 @@
 package breakout;
 
+import engine.Actor;
 import engine.Sound;
 import engine.World;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -31,6 +33,8 @@ public class BallWorld extends World {
     private Ball ball;
     private Paddle paddle;
     private int level;
+
+    private ImageView background = new ImageView(new Image("file:src/breakoutresources/background.png"));
 
     private Sound loseSound = new Sound("breakoutresources/game_lost.wav");
     private Sound winSound = new Sound("breakoutresources/game_won.wav");
@@ -105,6 +109,10 @@ public class BallWorld extends World {
     public void setLevel() {
         numBricks = 0;
 
+        getChildren().add(background);
+        background.setX(getWidth() / 2 - background.getBoundsInLocal().getWidth() / 2);
+        background.setY(0);
+
         ball = new Ball();
         getChildren().add(ball);
 
@@ -117,9 +125,9 @@ public class BallWorld extends World {
         ball.setX(getWidth() / 2 -  ball.getWidth() / 2);
         ball.setY(paddle.getY() - ball.getHeight());
 
-        setOnMouseMoved(e -> {
-            paddle.setX(e.getX() - paddle.getWidth() / 2);
-        });
+//        setOnMouseMoved(e -> {
+//            paddle.setX(e.getX() - paddle.getWidth() / 2);
+//        });
 
         score = new Score();
         score.setX(50);
@@ -206,6 +214,18 @@ public class BallWorld extends World {
 
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+    public void scroll(double dx) {
+        // For now, only move the background by the OPPOSITE of dx.
+        // For example, if dx was 5 then you would move the background by -5.
+        if (getWidth() - background.getBoundsInLocal().getWidth() <= background.getX() - dx && background.getX() - dx <= 0) {
+            background.setX(background.getX() - dx);
+
+            for (Actor actor : getObjects(Actor.class)) {
+                actor.setX(actor.getX() - dx);
+            }
+        }
     }
 
     public Score getScore() {
