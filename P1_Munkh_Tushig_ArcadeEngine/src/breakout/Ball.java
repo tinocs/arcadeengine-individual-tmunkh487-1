@@ -25,7 +25,7 @@ public class Ball extends Actor {
 
     @Override
     public void act(long now) {
-        if (!((BallWorld) getWorld()).getIsPaused()) {
+        if (!((BallWorld) getWorld()).getIsPaused() && !((BallWorld) getWorld()).getIsGameOver()) {
             move(dx, dy);
 
             Bounds worldBounds = getWorld().getBoundsInLocal();

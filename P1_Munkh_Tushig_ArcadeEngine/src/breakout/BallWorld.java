@@ -27,10 +27,10 @@ public class BallWorld extends World {
     private boolean isGameOver = false;
     private int numBricks = 100;
     private boolean isPaused = true;
-    Text gameOverText = new Text();
-    Ball ball;
-    Paddle paddle;
-    int level;
+    private Text gameOverText = new Text();
+    private Ball ball;
+    private Paddle paddle;
+    private int level;
 
     private Sound loseSound = new Sound("breakoutresources/game_lost.wav");
     private Sound winSound = new Sound("breakoutresources/game_won.wav");
@@ -62,14 +62,12 @@ public class BallWorld extends World {
 
                 isGameOver = true;
 
-                gameOverText.setText("You Won!");
+                gameOverText.setText("You Won! (Press Space to continue)");
 
                 getChildren().add(gameOverText);
 
                 gameOverText.setX(getWidth() / 2 - gameOverText.getBoundsInLocal().getWidth() / 2);
                 gameOverText.setY(getHeight() / 2 - gameOverText.getBoundsInLocal().getHeight() / 2);
-
-                isPaused = true;
             }
             else {
                 getChildren().clear();
@@ -90,14 +88,12 @@ public class BallWorld extends World {
 
             isGameOver = true;
 
-            gameOverText.setText("You Lost!");
+            gameOverText.setText("You Lost! (Press Space to continue)");
 
             getChildren().add(gameOverText);
 
             gameOverText.setX(getWidth() / 2 - gameOverText.getBoundsInLocal().getWidth() / 2);
             gameOverText.setY(getHeight() / 2 - gameOverText.getBoundsInLocal().getHeight() / 2);
-
-            isPaused = true;
         }
     }
 
@@ -226,5 +222,9 @@ public class BallWorld extends World {
 
     public void setIsPaused(boolean isPaused) {
         this.isPaused = isPaused;
+    }
+
+    public boolean getIsGameOver() {
+        return isGameOver;
     }
 }
