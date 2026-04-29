@@ -3,6 +3,7 @@ package breakout;
 import engine.Actor;
 import engine.Sound;
 import engine.World;
+import javafx.animation.Animation;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -19,6 +20,7 @@ import javafx.stage.Stage;
 import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BallWorld extends World {
@@ -27,12 +29,13 @@ public class BallWorld extends World {
     private Lives lives;
     private Stage stage;
     private boolean isGameOver = false;
-    private int numBricks = 100;
     private boolean isPaused = true;
     private Text gameOverText = new Text();
+    private Text pauseText = new Text();
     private Ball ball;
     private Paddle paddle;
     private int level;
+    private ArrayList<Animation> animations = new ArrayList<>();
 
     private ImageView background = new ImageView(new Image("file:src/breakoutresources/background.png"));
 
@@ -55,11 +58,17 @@ public class BallWorld extends World {
 
             level = 1;
             lives.setLivesVal(3);
+            for (Animation animation : animations) {
+                animation.stop();
+            }
+            animations.clear();
             getChildren().clear();
             setTitleScreen();
+
+            isGameOver = false;
         }
 
-        if (numBricks == 0) {
+        if (getObjects(Brick.class).size() == 0) {
             level++;
             if (level == 3 && !isGameOver) {
                 winSound.play();
@@ -73,7 +82,11 @@ public class BallWorld extends World {
                 gameOverText.setX(getWidth() / 2 - gameOverText.getBoundsInLocal().getWidth() / 2);
                 gameOverText.setY(getHeight() / 2 - gameOverText.getBoundsInLocal().getHeight() / 2);
             }
-            else {
+            else if (level < 3){
+                for (Animation animation : animations) {
+                    animation.stop();
+                }
+                animations.clear();
                 getChildren().clear();
                 setLevel();
             }
@@ -85,6 +98,7 @@ public class BallWorld extends World {
 
         if (isPaused) {
             ball.setX(paddle.getX() + paddle.getWidth() / 2 - ball.getWidth() / 2);
+            ball.setY(paddle.getY() - ball.getHeight() - 2);
         }
 
         if (lives.getLivesVal() == 0 && !isGameOver) {
@@ -107,7 +121,7 @@ public class BallWorld extends World {
     }
 
     public void setLevel() {
-        numBricks = 0;
+        isPaused = true;
 
         getChildren().add(background);
         background.setX(getWidth() / 2 - background.getBoundsInLocal().getWidth() / 2);
@@ -157,14 +171,14 @@ public class BallWorld extends World {
                 String[] split = line.split("");
                 for (int j = 0; j < cols; j++) {
                     int type = Integer.parseInt(split[j]);
-                    if (type == 0) continue;
+                    if (type != 0) {
+                        brick = new Brick(type);
+                        getChildren().add(brick);
+                        brick.setX(x);
+                        brick.setY(y);
+                    }
 
-                    brick = new Brick(type);
-                    getChildren().add(brick);
-                    brick.setX(x);
-                    brick.setY(y);
                     x += brick.getWidth();
-                    numBricks++;
                 }
 
                 x = ogX;
@@ -173,10 +187,6 @@ public class BallWorld extends World {
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
         }
-    }
-
-    public void decrementNumBricks() {
-        numBricks--;
     }
 
     public void setTitleScreen() {
@@ -246,5 +256,13 @@ public class BallWorld extends World {
 
     public boolean getIsGameOver() {
         return isGameOver;
+    }
+
+    public void addToAnimationList(Animation a) {
+        animations.add(a);
+    }
+
+    public void removeFromAnimationList(Animation a) {
+        animations.remove(a);
     }
 }

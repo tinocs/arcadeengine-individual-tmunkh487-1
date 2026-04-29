@@ -4,10 +4,8 @@ import engine.Actor;
 import engine.Sound;
 import engine.World;
 import javafx.animation.FadeTransition;
-import javafx.geometry.Bounds;
 import javafx.scene.image.Image;
 import javafx.util.Duration;
-import tests.CounterCoin;
 
 public class Ball extends Actor {
     double dx;
@@ -19,8 +17,8 @@ public class Ball extends Actor {
     public Ball() {
         setImage(new Image("file:src/breakoutresources/ball.png"));
 
-        dx = 6;
-        dy = 7;
+        dx = 5;
+        dy = 5;
     }
 
     @Override
@@ -58,6 +56,8 @@ public class Ball extends Actor {
 
                 lives.setLivesVal(lives.getLivesVal() - 1);
 
+                ((BallWorld) getWorld()).setIsPaused(true);
+
                 loseLifeSnd.play();
             }
 
@@ -67,8 +67,6 @@ public class Ball extends Actor {
             }
 
             if (getOneIntersectingObject(Brick.class) != null) {
-                brickSnd.play();
-
                 Brick brick = getOneIntersectingObject(Brick.class);
 
                 if (brick.getX() <= getX() && getX() <= brick.getX() + brick.getWidth()) {
@@ -83,16 +81,17 @@ public class Ball extends Actor {
                 Score score = ((BallWorld) getWorld()).getScore();
                 score.setScoreVal(score.getScoreVal() + 100);
 
-                ((BallWorld) getWorld()).decrementNumBricks();
-
-                FadeTransition fadeTransition = new FadeTransition(new Duration(1e9 * 5), brick);
-                fadeTransition.play();
-
+                FadeTransition fadeTransition = new FadeTransition(Duration.millis(300), brick);
+                ((BallWorld) getWorld()).addToAnimationList(fadeTransition);
+                fadeTransition.setFromValue(1.0);
+                fadeTransition.setToValue(0);
                 fadeTransition.setOnFinished(e -> {
                     getWorld().getChildren().remove(brick);
+                    ((BallWorld) getWorld()).removeFromAnimationList(fadeTransition);
                 });
+                fadeTransition.play();
 
-                getWorld().getChildren().remove(brick);
+                brickSnd.play();
             }
         }
     }
